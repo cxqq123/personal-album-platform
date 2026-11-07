@@ -5,6 +5,17 @@ build/
 local.properties
 .kotlin/
 
+# ---- Web (Next.js) ----
+web/node_modules/
+web/.next/
+web/out/
+web/dist/
+web/.turbo/
+web/coverage/
+web/next-env.d.ts
+*.tsbuildinfo
+.vercel/
+
 # ---- IDE ----
 .idea/
 *.iml
