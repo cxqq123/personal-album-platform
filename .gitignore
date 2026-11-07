@@ -1,0 +1,47 @@
+# ---- Gradle / Kotlin ----
+.gradle/
+build/
+!gradle/wrapper/gradle-wrapper.jar
+local.properties
+.kotlin/
+
+# ---- IDE ----
+.idea/
+*.iml
+.fleet/
+.DS_Store
+
+# ---- Android 签名与产物（绝不入库）----
+*.jks
+*.keystore
+*.apk
+*.aab
+captures/
+release/
+
+# ---- iOS / Xcode ----
+iosApp/Pods/
+iosApp/*.xcworkspace/xcuserdata/
+xcuserdata/
+DerivedData/
+build/ios/
+*.xcuserstate
+*.p8
+*.mobileprovision
+*.cer
+*.p12
+
+# ---- fastlane 产物 ----
+fastlane/report.xml
+fastlane/Preview.html
+fastlane/test_output/
+fastlane/screenshots/**/*.png
+fastlane/.env
+fastlane/.env.*
+
+# ---- 密钥与环境变量 ----
+.env
+.env.*
+!.env.example
+*.key
+service-account*.json

@@ -1,0 +1,76 @@
+# fastlane/Fastfile — KMP + CMP 双端发版
+#
+# 只做「构建 + 上传测试轨道」。
+# 提审（deliver / supply 到 production）故意不实现：必须由人手动执行。
+#
+# 需要的环境变量见 .github/workflows/ci.yml 的 secrets 部分。
+
+default_platform(:android)
+
+# --------------------------------------------------------------------- Android
+platform :android do
+  desc "构建 AAB 并上传到 Google Play 内测轨道"
+  lane :beta do
+    # 密钥通过 CI 注入；本地跑时必须自己 export，不要写死
+    keystore_path = "/tmp/release.jks"
+
+    gradle(
+      task: ":composeApp:bundleRelease",
+      properties: {
+        "android.injected.signing.store.file"     => keystore_path,
+        "android.injected.signing.store.password" => ENV["ANDROID_KEYSTORE_PASSWORD"],
+        "android.injected.signing.key.alias"      => ENV["ANDROID_KEY_ALIAS"],
+        "android.injected.signing.key.password"   => ENV["ANDROID_KEY_PASSWORD"]
+      }
+    )
+
+    upload_to_play_store(
+      track: "internal",
+      aab: lane_context[SharedValues::GRADLE_AAB_OUTPUT_PATH],
+      json_key_data: ENV["PLAY_SERVICE_ACCOUNT_JSON"],
+      skip_upload_metadata: true,
+      skip_upload_images: true,
+      skip_upload_screenshots: true,
+      # 首次发布必须先在 Play Console 手动上传一个 AAB，之后本 lane 才能工作
+      release_status: "draft"
+    )
+  end
+end
+
+# ------------------------------------------------------------------------- iOS
+platform :ios do
+  desc "构建 iOS 包并上传 TestFlight"
+  lane :beta do
+    api_key = app_store_connect_api_key(
+      key_id: ENV["ASC_KEY_ID"],
+      issuer_id: ENV["ASC_ISSUER_ID"],
+      key_content: ENV["ASC_KEY_P8"], # .p8 的文本内容，不是路径
+      duration: 1200,
+      in_house: false
+    )
+
+    # 证书仓库（fastlane match），readonly 表示只读不新建
+    match(
+      type: "appstore",
+      readonly: true,
+      api_key: api_key
+    )
+
+    # CMP 模板默认是 .xcodeproj；若你启用了 CocoaPods，改成 workspace: 并去掉 project:
+    build_app(
+      project: "iosApp/iosApp.xcodeproj",
+      scheme: "iosApp",
+      configuration: "Release",
+      export_method: "app-store",
+      output_directory: "build/ios",
+      clean: true
+    )
+
+    upload_to_testflight(
+      api_key: api_key,
+      skip_waiting_for_build_processing: true,
+      # 内测组由人手动管理，避免误发给外部测试者
+      groups: ["Internal"]
+    )
+  end
+end
