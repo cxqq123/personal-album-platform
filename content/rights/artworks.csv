@@ -1,0 +1,4 @@
+status,id,title_zh,title_en,figure,museum,inventory_no,source_url,license,license_url,commercial_ok,credit_line,checked_date,checked_by,notes
+draft,qingming-shanghe,清明上河图,Along the River During the Qingming Festival,北宋 · 张择端,故宫博物院,,https://www.dpm.org.cn/collection/paint/,UNKNOWN,,unknown,故宫博物院藏,,,示例行：需替换为具体作品页并核实条款
+draft,qianli-jiangshan,千里江山图,A Thousand Li of Rivers and Mountains,北宋 · 王希孟,故宫博物院,,https://www.dpm.org.cn/collection/paint/,UNKNOWN,,unknown,故宫博物院藏,,,示例行：需替换为具体作品页并核实条款
+draft,great-wave,神奈川冲浪里,Under the Wave off Kanagawa,江户 · 葛饰北斋,The Metropolitan Museum of Art,,https://www.metmuseum.org/art/collection,CC0-1.0,https://www.metmuseum.org/about-the-met/policies-and-documents/open-access,yes,The Metropolitan Museum of Art,,,示例行：确认具体作品页后填入 source_url

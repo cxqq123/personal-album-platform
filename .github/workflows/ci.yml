@@ -15,6 +15,20 @@ env:
   GRADLE_OPTS: "-Dorg.gradle.jvmargs=-Xmx4g -Dorg.gradle.daemon=false"
 
 jobs:
+  # ----------------------------------------------------------------- 内容版权门禁
+  content:
+    name: Content rights
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      # 格式、枚举、矛盾组合校验；发布构建再把 --strict 打开
+      - name: Check image rights
+        run: python3 tools/check_rights.py
+
   # ------------------------------------------------------------------- 共享逻辑
   shared:
     name: Shared logic
