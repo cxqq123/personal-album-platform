@@ -1,4 +1,27 @@
-status,id,title_zh,title_en,figure,museum,inventory_no,source_url,license,license_url,commercial_ok,credit_line,checked_date,checked_by,notes
-draft,qingming-shanghe,清明上河图,Along the River During the Qingming Festival,北宋 · 张择端,故宫博物院,,https://www.dpm.org.cn/collection/paint/,UNKNOWN,,unknown,故宫博物院藏,,,示例行：需替换为具体作品页并核实条款
-draft,qianli-jiangshan,千里江山图,A Thousand Li of Rivers and Mountains,北宋 · 王希孟,故宫博物院,,https://www.dpm.org.cn/collection/paint/,UNKNOWN,,unknown,故宫博物院藏,,,示例行：需替换为具体作品页并核实条款
-draft,great-wave,神奈川冲浪里,Under the Wave off Kanagawa,江户 · 葛饰北斋,The Metropolitan Museum of Art,,https://www.metmuseum.org/art/collection,CC0-1.0,https://www.metmuseum.org/about-the-met/policies-and-documents/open-access,yes,The Metropolitan Museum of Art,,,示例行：确认具体作品页后填入 source_url
+status,id,episode,artist,artist_years,title_zh,title_en,museum,source,license,license_marker,commercial_ok,source_page_url,image_url,license_url,credit_line,accessed_date,checked_by,notes
+draft,gu-kaizhi-nvshizhen,E01,顾恺之（传）,344-406,女史箴图（唐摹本）,Admonitions of the Instructress,大英博物馆,BM,UNKNOWN,,unknown,,,,大英博物馆藏,,,BM 条款 CC BY-NC-SA 禁商用；Commons 的 PD-Art 副本是另一套依据，二选一并写明
+draft,gu-kaizhi-luoshen,E01,顾恺之（传）,344-406,洛神赋图（宋摹本）,Nymph of the Luo River,北京故宫博物院,DPM,UNKNOWN,,unknown,,,,北京故宫博物院藏,,,需确认故宫官网条款；国内馆藏多不可直接商用
+draft,zhan-zizhen-youchun,E01,展子虔（传）,550-604,游春图,Spring Excursion,北京故宫博物院,DPM,UNKNOWN,,unknown,,,,北京故宫博物院藏,,,原表记为台北故宫，实藏北京故宫，已更正
+draft,fan-kuan-xishan,E01,范宽,960-1030,溪山行旅图,Travelers Among Mountains and Streams,台北故宫博物院,NPM,UNKNOWN,,unknown,,,,台北故宫博物院藏,,,台北故宫适用政府资料开放授权条款（CC BY 4.0 兼容），非 CC0；须确认在开放清单内
+draft,guo-xi-zaochun,E01,郭熙,1000-1090,早春图,Early Spring,台北故宫博物院,NPM,UNKNOWN,,unknown,,,,台北故宫博物院藏,,,同上；Met 是否藏有郭熙需另行核实
+draft,guo-xi-keshi,E01,郭熙,1000-1090,窠石平远图,Fir Trees and Distant Hills,北京故宫博物院,DPM,UNKNOWN,,unknown,,,,北京故宫博物院藏,,,
+draft,zhang-zeduan-qingming,E01,张择端,1085-1145,清明上河图,Along the River During the Qingming Festival,北京故宫博物院,COMMONS,UNKNOWN,,unknown,,,,北京故宫博物院藏,,,Commons 有多份副本，须选明确标注 PD-Art 的文件并记录原始来源
+draft,wang-ximeng-qianli,E01,王希孟,1096-1119,千里江山图（局部）,A Thousand Li of Rivers and Mountains,北京故宫博物院,COMMONS,UNKNOWN,,unknown,,,,北京故宫博物院藏,,,仅取局部，避免整卷超高分辨率带来的传输与权利风险
+draft,li-gonglin-wuma,E01,李公麟,1049-1106,五马图,Five Horses,东京国立博物馆,TNM,UNKNOWN,,unknown,,,,东京国立博物馆藏,,,原表标 Wikimedia/Met，实藏东京国立博物馆，需核对
+draft,zhao-ji-furong,E01,赵佶（宋徽宗）,1082-1135,芙蓉锦鸡图,Hibiscus and Golden Pheasant,北京故宫博物院,DPM,UNKNOWN,,unknown,,,,北京故宫博物院藏,,,院体花鸟代表作
+draft,huang-gongwang-fuchun,E01,黄公望,1269-1354,富春山居图·无用师卷,Dwelling in the Fuchun Mountains,台北故宫博物院,NPM,UNKNOWN,,unknown,,,,台北故宫博物院藏,,,
+draft,ni-zan-youjian,E01,倪瓒,1301-1374,幽涧寒松图,Pine and Stream,台北故宫博物院,NPM,UNKNOWN,,unknown,,,,台北故宫博物院藏,,,
+draft,ni-zan-qiuting,E01,倪瓒,1301-1374,秋亭嘉树图,Autumn Pavilion and Trees,克利夫兰艺术博物馆,CMA,CC0-1.0,,yes,,,,克利夫兰艺术博物馆藏,,,CMA 开放数据默认 CC0，须逐件确认该作在开放清单内
+draft,botticelli-primavera,E01,波提切利,1445-1510,春,Primavera,乌菲齐美术馆,UFFIZI,UNKNOWN,,unknown,,,,乌菲齐美术馆藏,,,原表建议 Getty，实藏乌菲齐，Getty 无此作
+draft,leonardo-mona-lisa,E01,达·芬奇,1452-1519,蒙娜丽莎,Mona Lisa,卢浮宫,LOUVRE,UNKNOWN,,unknown,,,,卢浮宫藏,,,卢浮宫官网图像非开放授权；须用 Commons 的 PD-Art 副本
+draft,michelangelo-david,E01,米开朗基罗,1475-1564,大卫,David,佛罗伦萨学院美术馆,ACCADEMIA,UNKNOWN,,unknown,,,,佛罗伦萨学院美术馆藏,,,雕塑摄影涉拍摄者权利，须选明确 PD 标签的副本
+draft,raphael-athens,E01,拉斐尔,1483-1520,雅典学院,The School of Athens,梵蒂冈博物馆,VATICAN,UNKNOWN,,unknown,,,,梵蒂冈博物馆藏,,,
+draft,rembrandt-nightwatch,E01,伦勃朗,1606-1669,夜巡,The Night Watch,荷兰国立博物馆,RIJKS,CC0-1.0,,yes,,,,荷兰国立博物馆藏,,,Rijksmuseum 开放数据 CC0，可直接商用
+draft,vermeer-milkmaid,E01,维米尔,1632-1675,倒牛奶的女仆,The Milkmaid,荷兰国立博物馆,RIJKS,CC0-1.0,,yes,,,,荷兰国立博物馆藏,,,
+draft,vermeer-pearl,E01,维米尔,1632-1675,戴珍珠耳环的少女,Girl with a Pearl Earring,莫瑞泰斯皇家美术馆,MAURITSHUIS,UNKNOWN,,unknown,,,,莫瑞泰斯皇家美术馆藏,,,原表记为 Rijksmuseum，实藏莫瑞泰斯，已更正
+draft,rubens-graces,E01,鲁本斯,1577-1640,美惠三女神,The Three Graces,普拉多博物馆,PRADO,UNKNOWN,,unknown,,,,普拉多博物馆藏,,,
+draft,velazquez-lasmeninas,E01,委拉斯开兹,1599-1660,宫娥,Las Meninas,普拉多博物馆,PRADO,UNKNOWN,,unknown,,,,普拉多博物馆藏,,,
+draft,monet-waterlilies,E01,莫奈,1840-1926,睡莲,Water Lilies,芝加哥艺术博物馆,AIC,CC0-1.0,,yes,,,,芝加哥艺术博物馆藏,,,AIC 开放数据 CC0；同题材多幅，须锁定具体藏品号
+draft,monet-haystacks,E01,莫奈,1840-1926,干草堆,Stacks of Wheat,芝加哥艺术博物馆,AIC,CC0-1.0,,yes,,,,芝加哥艺术博物馆藏,,,
+draft,vangogh-bedroom,E01,梵高,1853-1890,卧室,The Bedroom,芝加哥艺术博物馆,AIC,CC0-1.0,,yes,,,,芝加哥艺术博物馆藏,,,《卧室》共三版，须锁定芝加哥版
+draft,vangogh-selfportrait,E01,梵高,1853-1890,自画像,Self-Portrait,芝加哥艺术博物馆,AIC,CC0-1.0,,yes,,,,芝加哥艺术博物馆藏,,,

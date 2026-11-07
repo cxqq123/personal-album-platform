@@ -1,0 +1,17 @@
+code,institution,country,license_basis,terms_url,commercial_default,notes,checked_date
+MET,The Metropolitan Museum of Art,US,CC0 1.0（Open Access）,https://www.metmuseum.org/about-the-met/policies-and-documents/open-access,yes,仅限已进入公有领域的作品；Met 图像 CDN 直链稳定,2026-11-07
+CMA,Cleveland Museum of Art,US,CC0 1.0（Open Access）,https://www.clevelandart.org/open-access,yes,提供 API 与高清图，元数据完整,2026-11-07
+AIC,Art Institute of Chicago,US,CC0 1.0（Open Access）,,yes,印象派与后印象派馆藏丰富,2026-11-07
+RIJKS,Rijksmuseum,NL,CC0 1.0（Open Data）,https://www.rijksmuseum.nl/en/research/conduct-research/data,yes,荷兰黄金时代核心来源，含高清下载,2026-11-07
+GETTY,J. Paul Getty Museum,US,Open Content Program（多为 CC0）,,yes,须逐件确认；Getty 中国书画藏品有限,2026-11-07
+NPM,国立故宫博物院（台北）,TW,政府资料开放授权条款（CC BY 4.0 兼容）,,yes_with_attribution,非 CC0：必须署名；须确认该藏品在开放清单内，且图像未含他人著作,2026-11-07
+DPM,故宫博物院（北京）,CN,官网条款（多数未开放商用）,,no,默认按不可商用处理；如需使用须取得书面授权,2026-11-07
+BM,The British Museum,UK,CC BY-NC-SA 4.0,,no,禁商用；Commons 的 PD-Art 副本是另一套法律依据，须单独判断,2026-11-07
+COMMONS,维基共享资源（聚合平台）,INTL,逐文件判定（PD-Art / CC0 / CC BY 等）,,unknown,不是原始来源：必须回溯到馆方页面并记录，文件页须明确标注授权,2026-11-07
+LOUVRE,Musée du Louvre,FR,官网图像非开放授权,,no,须改用 Commons 的 PD-Art 副本并记录,2026-11-07
+UFFIZI,Gallerie degli Uffizi,IT,官网图像条款受限,,no,同上,2026-11-07
+ACCADEMIA,Galleria dell'Accademia,IT,官网图像条款受限,,no,雕塑摄影另涉拍摄者权利,2026-11-07
+VATICAN,Musei Vaticani,VA,官网图像条款受限,,no,同上,2026-11-07
+PRADO,Museo Nacional del Prado,ES,官网图像条款受限,,no,同上,2026-11-07
+MAURITSHUIS,Mauritshuis,NL,官网图像条款（部分开放）,,unknown,须逐件确认,2026-11-07
+TNM,东京国立博物馆,JP,官网图像条款（部分开放）,,unknown,须逐件确认,2026-11-07

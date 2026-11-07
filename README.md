@@ -19,7 +19,7 @@
 ## 目录
 
 ```
-content/rights/            图像版权清单（发布准入凭证）
+content/rights/            图像版权清单 + 来源机构登记（发布准入凭证）
 tools/check_rights.py      清单校验脚本
 shared/                    KMP 逻辑模块（唯一真相源）
 composeApp/                Compose UI（Android + iOS）
@@ -27,7 +27,7 @@ web/                       Next.js Web 端
 iosApp/                    Xcode 壳工程
 .github/workflows/ci.yml   content / shared / web / android / ios 五个 job
 fastlane/                  App 发版 lane
-docs/                      路线图、Web 部署
+docs/                      路线图、Web 部署、第 1 期展卷计划
 AGENTS.md                  项目契约
 ```
 
