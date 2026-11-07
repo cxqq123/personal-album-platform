@@ -1,0 +1,591 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Lumière Archive · 设计还原预览</title>
+<style>
+/* ============================================================
+   设计 token —— 从 Stitch 稿的 tailwind.config 迁移
+   字体：Bodoni Moda（标题）/ Inter（正文）需自托管，
+   未放置字体文件时优雅降级到系统衬线/无衬线。
+   ============================================================ */
+:root {
+  --surface: #f9f9f9;
+  --surface-low: #f3f3f3;
+  --surface-high: #e8e8e8;
+  --on-surface: #1a1c1c;
+  --secondary: #5a5f64;
+  --outline: #747878;
+  --outline-variant: #c4c7c7;
+
+  --font-serif: "Bodoni Moda", "Songti SC", "Noto Serif SC", Georgia, serif;
+  --font-sans: "Inter", -apple-system, "PingFang SC", "Microsoft YaHei", sans-serif;
+
+  --pad-x: 1.25rem;
+  --header-h: 5rem;
+}
+
+@media (min-width: 1024px) {
+  :root { --pad-x: 4rem; }
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+
+html, body {
+  margin: 0;
+  padding: 0;
+  background: var(--surface);
+  color: var(--on-surface);
+  font-family: var(--font-sans);
+  font-size: 0.9375rem;
+  line-height: 1.375rem;
+  -webkit-font-smoothing: antialiased;
+  font-feature-settings: "liga" 1;
+}
+
+a { color: inherit; text-decoration: none; }
+button { font: inherit; color: inherit; background: none; border: 0; cursor: pointer; }
+img { display: block; max-width: 100%; }
+
+::selection { background: #1c1b1b; color: #fff; }
+
+/* 隐藏滚动条（与原稿一致） */
+::-webkit-scrollbar { display: none; }
+
+/* ---------------- 通用排版 ---------------- */
+.wrap { padding-inline: var(--pad-x); }
+
+.eyebrow {
+  font-size: 0.6875rem;
+  line-height: 0.875rem;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  font-weight: 500;
+  color: var(--secondary);
+}
+
+.display { font-family: var(--font-serif); font-weight: 400; letter-spacing: -0.015em; }
+.display-xl { font-size: clamp(2.75rem, 7vw, 3.5rem); line-height: 1.06; }
+.display-lg { font-size: clamp(2.25rem, 5vw, 3.5rem); line-height: 1.12; }
+.headline-lg { font-family: var(--font-serif); font-size: clamp(1.75rem, 3vw, 2.25rem); line-height: 1.2; font-weight: 400; }
+.headline-sm { font-family: var(--font-serif); font-size: 1.25rem; line-height: 1.75rem; font-weight: 500; }
+.lead { font-size: 1.0625rem; line-height: 1.85; font-weight: 300; color: var(--secondary); letter-spacing: -0.005em; }
+.muted { color: var(--secondary); }
+.rule { border: 0; border-top: 1px solid var(--outline-variant); margin: 0; }
+
+/* ---------------- Header ---------------- */
+.site-header {
+  position: fixed; inset: 0 0 auto 0; z-index: 50;
+  background: color-mix(in srgb, var(--surface) 90%, transparent);
+  backdrop-filter: saturate(180%) blur(12px);
+  border-bottom: 1px solid color-mix(in srgb, var(--outline-variant) 55%, transparent);
+}
+.site-header .bar {
+  height: var(--header-h);
+  display: flex; align-items: center; justify-content: space-between; gap: 2rem;
+}
+.brand { display: flex; flex-direction: column; }
+.brand strong {
+  font-family: var(--font-serif); font-size: 1.25rem; font-weight: 500;
+  letter-spacing: 0.16em; text-transform: uppercase; line-height: 1.2;
+}
+.brand span { font-size: 0.6875rem; letter-spacing: 0.18em; text-transform: uppercase; color: var(--secondary); margin-top: 0.25rem; }
+
+.nav { display: none; align-items: center; gap: 2rem; }
+@media (min-width: 1180px) { .nav { display: flex; } }
+.nav a {
+  font-size: 0.75rem; letter-spacing: 0.12em; text-transform: uppercase;
+  color: var(--secondary); padding-bottom: 0.25rem;
+  border-bottom: 1px solid transparent; transition: color .2s, border-color .2s;
+}
+.nav a:hover { color: var(--on-surface); }
+.nav a[aria-current="page"] { color: var(--on-surface); border-bottom-color: var(--on-surface); }
+
+.tools { display: flex; align-items: center; gap: 1rem; }
+.badge {
+  display: inline-flex; align-items: center; gap: 0.375rem;
+  padding: 0.25rem 0.5rem; background: var(--surface-low);
+  font-size: 0.6875rem; letter-spacing: 0.15em; text-transform: uppercase; color: var(--secondary);
+}
+.badge .dot { width: 6px; height: 6px; border-radius: 999px; background: #000; animation: pulse 2s infinite; }
+@keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: .25; } }
+
+.search-btn {
+  display: inline-flex; align-items: center; gap: 0.5rem;
+  padding: 0.375rem 0.75rem; border-radius: 999px; background: var(--surface-low);
+  color: var(--secondary); font-size: 0.6875rem; letter-spacing: 0.12em; text-transform: uppercase;
+}
+.search-btn:hover { background: var(--surface-high); color: var(--on-surface); }
+.lang { font-size: 0.6875rem; letter-spacing: 0.15em; color: var(--secondary); }
+.lang b { color: var(--on-surface); font-weight: 500; }
+
+/* ---------------- Hero ---------------- */
+main { padding-top: var(--header-h); }
+
+.hero { padding-block: 3.5rem 4rem; border-bottom: 1px solid var(--outline-variant); }
+.hero .kicker { display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap; }
+.hero h1 { margin: 1.25rem 0 0; max-width: 20ch; }
+.hero .lead { margin-top: 1.25rem; max-width: 46ch; }
+
+.stat-row { display: flex; flex-wrap: wrap; gap: 3rem; margin-top: 3rem; align-items: flex-end; }
+.stat .num { font-family: var(--font-serif); font-size: clamp(3rem, 6vw, 4.5rem); line-height: 1; letter-spacing: -0.02em; }
+.stat .cap { margin-top: 0.5rem; font-size: 0.6875rem; letter-spacing: 0.15em; text-transform: uppercase; color: var(--secondary); }
+
+.filters { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 2.5rem; }
+.chip {
+  display: inline-flex; align-items: center; gap: 0.5rem;
+  border: 1px solid var(--outline-variant); padding: 0.375rem 0.75rem;
+  font-size: 0.6875rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--secondary);
+}
+.chip i { font-style: normal; color: var(--outline); }
+
+/* ---------------- Section ---------------- */
+.section { padding-block: 4rem; border-bottom: 1px solid var(--outline-variant); }
+.section-head { display: flex; align-items: baseline; justify-content: space-between; gap: 1rem; flex-wrap: wrap; margin-bottom: 2.5rem; }
+.section-head h2 { margin: 0.5rem 0 0; }
+
+/* ---------------- Taxonomy ---------------- */
+.taxonomy { display: grid; grid-template-columns: 1fr; gap: 2.5rem; }
+@media (min-width: 900px) { .taxonomy { grid-template-columns: repeat(3, 1fr); gap: 3rem; } }
+.tax-col h3 { margin: 0 0 1.25rem; font-size: 0.6875rem; letter-spacing: 0.15em; text-transform: uppercase; color: var(--secondary); font-weight: 500; }
+.tax-row {
+  display: flex; align-items: baseline; justify-content: space-between; gap: 1rem;
+  padding-block: 0.75rem; border-top: 1px solid var(--outline-variant);
+}
+.tax-row .k { font-size: 0.875rem; }
+.tax-row .v { font-size: 0.6875rem; letter-spacing: 0.1em; color: var(--secondary); white-space: nowrap; }
+
+/* ---------------- Works ---------------- */
+.works { display: grid; grid-template-columns: 1fr; gap: 2.5rem 2rem; }
+@media (min-width: 700px) { .works { grid-template-columns: repeat(2, 1fr); } }
+@media (min-width: 1100px) { .works { grid-template-columns: repeat(3, 1fr); } }
+
+.card { display: flex; flex-direction: column; border-top: 1px solid var(--on-surface); padding-top: 0.75rem; }
+.thumb {
+  position: relative; aspect-ratio: 4 / 3; background: var(--surface-low);
+  display: grid; place-items: center; overflow: hidden;
+  border: 1px solid var(--outline-variant);
+}
+.thumb::after {
+  content: ""; position: absolute; inset: 0;
+  background: repeating-linear-gradient(135deg, transparent 0 10px, rgba(0,0,0,.025) 10px 20px);
+}
+.thumb .ph {
+  position: relative; z-index: 1; text-align: center; color: var(--secondary);
+  font-size: 0.6875rem; letter-spacing: 0.15em; text-transform: uppercase; line-height: 1.8;
+}
+.card .meta { display: flex; justify-content: space-between; gap: 0.75rem; margin-top: 1rem; font-size: 0.6875rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--secondary); }
+.card h3 { font-family: var(--font-serif); font-size: 1.375rem; line-height: 1.35; font-weight: 500; margin: 0.625rem 0 0.25rem; }
+.card .sub { font-size: 0.8125rem; color: var(--secondary); }
+.card .credit { margin-top: 0.75rem; font-size: 0.75rem; color: var(--secondary); display: flex; flex-direction: column; gap: 0.15rem; }
+.card .lic { margin-top: 0.75rem; align-self: flex-start; font-size: 0.625rem; letter-spacing: 0.14em; text-transform: uppercase; padding: 0.2rem 0.45rem; border: 1px solid var(--outline-variant); color: var(--secondary); }
+.card .lic.pending { border-style: dashed; }
+
+/* ---------------- Notice ---------------- */
+.notice {
+  display: flex; gap: 0.75rem; align-items: baseline;
+  background: var(--surface-low); border-left: 2px solid var(--on-surface);
+  padding: 0.875rem 1rem; font-size: 0.8125rem; color: var(--secondary);
+  margin-top: 2rem;
+}
+.notice b { color: var(--on-surface); font-weight: 500; }
+
+/* ---------------- Footer ---------------- */
+.site-footer { background: var(--surface-low); margin-top: 4rem; }
+.footer-grid { display: grid; grid-template-columns: 1fr; gap: 2rem; padding-block: 4rem 2rem; }
+@media (min-width: 900px) { .footer-grid { grid-template-columns: 2fr 1fr 1fr; gap: 3rem; } }
+.site-footer p { margin: 0.75rem 0 0; font-size: 0.8125rem; line-height: 1.75; color: var(--secondary); max-width: 42ch; }
+.footer-col h4 { margin: 0 0 0.75rem; font-size: 0.6875rem; letter-spacing: 0.15em; text-transform: uppercase; font-weight: 500; }
+.footer-col ul { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 0.375rem; }
+.footer-col li { font-size: 0.8125rem; color: var(--secondary); }
+.footer-base {
+  display: flex; flex-wrap: wrap; gap: 1rem; justify-content: space-between;
+  padding-block: 1.25rem 3rem; border-top: 1px solid var(--outline-variant);
+  font-size: 0.6875rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--secondary);
+}
+.footer-links { display: flex; flex-wrap: wrap; gap: 1rem; }
+
+.preview-flag{position:fixed;right:1rem;bottom:1rem;z-index:99;background:#1a1c1c;color:#f9f9f9;
+font-size:.625rem;letter-spacing:.14em;text-transform:uppercase;padding:.375rem .625rem;opacity:.85}
+</style>
+</head>
+<body>
+<header class="site-header">
+  <div class="wrap bar">
+    <div style="display:flex;align-items:center;gap:3rem">
+      <a class="brand" href="#top"><strong>Lumière Archive</strong><span>文化遗产数字典藏</span></a>
+      <nav class="nav">
+        <a href="#catalogue" aria-current="page">探索与检索 (Explore &amp; Search)</a>
+        <a href="#works">IIIF 深度浏览 (Deep Zoom &amp; Scrolls)</a>
+        <a href="#taxonomy">策展专论 (Curatorial Dossiers)</a>
+      </nav>
+    </div>
+    <div class="tools">
+      <span class="badge"><span class="dot"></span>IIIF v3.0</span>
+      <button class="search-btn" type="button">检索 <kbd style="opacity:.6">⌘K</kbd></button>
+      <span class="lang"><b>ZH</b> / EN</span>
+    </div>
+  </div>
+</header>
+
+<main id="top">
+  <section class="hero wrap" id="catalogue">
+    <div class="kicker">
+      <span class="eyebrow">Catalogue Raisonné Index</span>
+      <span class="eyebrow" style="opacity:.5">/</span>
+      <span class="eyebrow">跨文明典藏索引系统</span>
+    </div>
+    <h1 class="display display-xl">二十五期<br>古代名人书画展卷</h1>
+    <p class="lead">以 IIIF 深缩放呈现中国书画长卷与西方绘画原作。每一件均登记作者、现藏地、图像来源与许可协议；即使协议不强制，署名仍在此完整呈现。</p>
+    <div class="stat-row">
+      <div class="stat"><div class="num display">26</div><div class="cap">在册作品 / Works</div></div>
+      <div class="stat"><div class="num display">20</div><div class="cap">艺术家 / Artists</div></div>
+      <div class="stat"><div class="num display">13</div><div class="cap">收藏机构 / Institutions</div></div>
+      <div class="stat"><div class="num display">0</div><div class="cap">已核验可发布</div></div>
+    </div>
+    <div class="filters">
+      <span class="chip">期次 <i>第 1 期 · 基石</i></span>
+      <span class="chip">开放协议 <i>CC0 / PDM / 待核验</i></span>
+      <span class="chip">状态 <i>26 件待核验</i></span>
+    </div>
+    <div class="notice"><b>预览版</b><span>本页为设计还原稿。工作状态为「待核验」的作品暂不对外发布，图像将在权利登记完成后接入。</span></div>
+  </section>
+
+  <section class="section wrap" id="taxonomy">
+    <div class="section-head">
+      <div><span class="eyebrow">01 / Taxonomy Matrices</span><h2 class="headline-lg">多维分类视域</h2></div>
+      <span class="eyebrow muted">点击切换维度</span>
+    </div>
+    <div class="taxonomy">
+      <div class="tax-col"><h3>中国历代断代</h3><div class="tax-row"><span class="k">东晋</span><span class="v">2 件</span></div><div class="tax-row"><span class="k">隋</span><span class="v">1 件</span></div><div class="tax-row"><span class="k">北宋</span><span class="v">7 件</span></div><div class="tax-row"><span class="k">元</span><span class="v">3 件</span></div></div>
+      <div class="tax-col"><h3>西方艺术史分期</h3><div class="tax-row"><span class="k">文艺复兴早期</span><span class="v">1 件</span></div><div class="tax-row"><span class="k">盛期文艺复兴</span><span class="v">3 件</span></div><div class="tax-row"><span class="k">巴洛克</span><span class="v">3 件</span></div><div class="tax-row"><span class="k">荷兰黄金时代</span><span class="v">2 件</span></div><div class="tax-row"><span class="k">印象派</span><span class="v">2 件</span></div><div class="tax-row"><span class="k">后印象派</span><span class="v">2 件</span></div></div>
+      <div class="tax-col"><h3>收藏机构源</h3><div class="tax-row"><span class="k">北京故宫博物院</span><span class="v">6 件</span></div><div class="tax-row"><span class="k">台北故宫博物院</span><span class="v">4 件</span></div><div class="tax-row"><span class="k">芝加哥艺术博物馆</span><span class="v">4 件</span></div><div class="tax-row"><span class="k">荷兰国立博物馆</span><span class="v">2 件</span></div><div class="tax-row"><span class="k">普拉多博物馆</span><span class="v">2 件</span></div><div class="tax-row"><span class="k">大英博物馆</span><span class="v">1 件</span></div><div class="tax-row"><span class="k">东京国立博物馆</span><span class="v">1 件</span></div><div class="tax-row"><span class="k">克利夫兰艺术博物馆</span><span class="v">1 件</span></div><div class="tax-row"><span class="k">乌菲齐美术馆</span><span class="v">1 件</span></div><div class="tax-row"><span class="k">卢浮宫</span><span class="v">1 件</span></div><div class="tax-row"><span class="k">佛罗伦萨学院美术馆</span><span class="v">1 件</span></div><div class="tax-row"><span class="k">梵蒂冈博物馆</span><span class="v">1 件</span></div><div class="tax-row"><span class="k">莫瑞泰斯皇家美术馆</span><span class="v">1 件</span></div></div>
+    </div>
+  </section>
+
+  <section class="section wrap" id="works">
+    <div class="section-head">
+      <div><span class="eyebrow">02 / Masterwork Archives</span><h2 class="headline-lg">精选馆藏名作</h2></div>
+      <span class="eyebrow muted">26 件 · 第 1 期</span>
+    </div>
+    <div class="works">
+      <article class="card">
+        <div class="thumb"><span class="ph">图像待接入<br>Admonitions of the Instructress</span></div>
+        <div class="meta"><span>东晋</span><span>中国</span></div>
+        <h3>女史箴图（唐摹本）</h3>
+        <span class="sub">Admonitions of the Instructress</span>
+        <div class="credit">
+          <span>顾恺之（传）（344-406）</span>
+          <span>大英博物馆</span>
+        </div>
+        <span class="lic pending">权利待核验</span>
+      </article>
+      <article class="card">
+        <div class="thumb"><span class="ph">图像待接入<br>Nymph of the Luo River</span></div>
+        <div class="meta"><span>东晋</span><span>中国</span></div>
+        <h3>洛神赋图（宋摹本）</h3>
+        <span class="sub">Nymph of the Luo River</span>
+        <div class="credit">
+          <span>顾恺之（传）（344-406）</span>
+          <span>北京故宫博物院</span>
+        </div>
+        <span class="lic pending">权利待核验</span>
+      </article>
+      <article class="card">
+        <div class="thumb"><span class="ph">图像待接入<br>Spring Excursion</span></div>
+        <div class="meta"><span>隋</span><span>中国</span></div>
+        <h3>游春图</h3>
+        <span class="sub">Spring Excursion</span>
+        <div class="credit">
+          <span>展子虔（传）（550-604）</span>
+          <span>北京故宫博物院</span>
+        </div>
+        <span class="lic pending">权利待核验</span>
+      </article>
+      <article class="card">
+        <div class="thumb"><span class="ph">图像待接入<br>Travelers Among Mountains and Streams</span></div>
+        <div class="meta"><span>北宋</span><span>中国</span></div>
+        <h3>溪山行旅图</h3>
+        <span class="sub">Travelers Among Mountains and Streams</span>
+        <div class="credit">
+          <span>范宽（960-1030）</span>
+          <span>台北故宫博物院</span>
+        </div>
+        <span class="lic pending">权利待核验</span>
+      </article>
+      <article class="card">
+        <div class="thumb"><span class="ph">图像待接入<br>Early Spring</span></div>
+        <div class="meta"><span>北宋</span><span>中国</span></div>
+        <h3>早春图</h3>
+        <span class="sub">Early Spring</span>
+        <div class="credit">
+          <span>郭熙（1000-1090）</span>
+          <span>台北故宫博物院</span>
+        </div>
+        <span class="lic pending">权利待核验</span>
+      </article>
+      <article class="card">
+        <div class="thumb"><span class="ph">图像待接入<br>Fir Trees and Distant Hills</span></div>
+        <div class="meta"><span>北宋</span><span>中国</span></div>
+        <h3>窠石平远图</h3>
+        <span class="sub">Fir Trees and Distant Hills</span>
+        <div class="credit">
+          <span>郭熙（1000-1090）</span>
+          <span>北京故宫博物院</span>
+        </div>
+        <span class="lic pending">权利待核验</span>
+      </article>
+      <article class="card">
+        <div class="thumb"><span class="ph">图像待接入<br>Along the River During the Qingming Festival</span></div>
+        <div class="meta"><span>北宋</span><span>中国</span></div>
+        <h3>清明上河图</h3>
+        <span class="sub">Along the River During the Qingming Festival</span>
+        <div class="credit">
+          <span>张择端（1085-1145）</span>
+          <span>北京故宫博物院</span>
+        </div>
+        <span class="lic pending">权利待核验</span>
+      </article>
+      <article class="card">
+        <div class="thumb"><span class="ph">图像待接入<br>A Thousand Li of Rivers and Mountains</span></div>
+        <div class="meta"><span>北宋</span><span>中国</span></div>
+        <h3>千里江山图（局部）</h3>
+        <span class="sub">A Thousand Li of Rivers and Mountains</span>
+        <div class="credit">
+          <span>王希孟（1096-1119）</span>
+          <span>北京故宫博物院</span>
+        </div>
+        <span class="lic pending">权利待核验</span>
+      </article>
+      <article class="card">
+        <div class="thumb"><span class="ph">图像待接入<br>Five Horses</span></div>
+        <div class="meta"><span>北宋</span><span>中国</span></div>
+        <h3>五马图</h3>
+        <span class="sub">Five Horses</span>
+        <div class="credit">
+          <span>李公麟（1049-1106）</span>
+          <span>东京国立博物馆</span>
+        </div>
+        <span class="lic pending">权利待核验</span>
+      </article>
+      <article class="card">
+        <div class="thumb"><span class="ph">图像待接入<br>Hibiscus and Golden Pheasant</span></div>
+        <div class="meta"><span>北宋</span><span>中国</span></div>
+        <h3>芙蓉锦鸡图</h3>
+        <span class="sub">Hibiscus and Golden Pheasant</span>
+        <div class="credit">
+          <span>赵佶（宋徽宗）（1082-1135）</span>
+          <span>北京故宫博物院</span>
+        </div>
+        <span class="lic pending">权利待核验</span>
+      </article>
+      <article class="card">
+        <div class="thumb"><span class="ph">图像待接入<br>Dwelling in the Fuchun Mountains</span></div>
+        <div class="meta"><span>元</span><span>中国</span></div>
+        <h3>富春山居图·无用师卷</h3>
+        <span class="sub">Dwelling in the Fuchun Mountains</span>
+        <div class="credit">
+          <span>黄公望（1269-1354）</span>
+          <span>台北故宫博物院</span>
+        </div>
+        <span class="lic pending">权利待核验</span>
+      </article>
+      <article class="card">
+        <div class="thumb"><span class="ph">图像待接入<br>Pine and Stream</span></div>
+        <div class="meta"><span>元</span><span>中国</span></div>
+        <h3>幽涧寒松图</h3>
+        <span class="sub">Pine and Stream</span>
+        <div class="credit">
+          <span>倪瓒（1301-1374）</span>
+          <span>台北故宫博物院</span>
+        </div>
+        <span class="lic pending">权利待核验</span>
+      </article>
+      <article class="card">
+        <div class="thumb"><span class="ph">图像待接入<br>Autumn Pavilion and Trees</span></div>
+        <div class="meta"><span>元</span><span>中国</span></div>
+        <h3>秋亭嘉树图</h3>
+        <span class="sub">Autumn Pavilion and Trees</span>
+        <div class="credit">
+          <span>倪瓒（1301-1374）</span>
+          <span>克利夫兰艺术博物馆</span>
+        </div>
+        <span class="lic pending">权利待核验</span>
+      </article>
+      <article class="card">
+        <div class="thumb"><span class="ph">图像待接入<br>Primavera</span></div>
+        <div class="meta"><span>文艺复兴早期</span><span>西方</span></div>
+        <h3>春</h3>
+        <span class="sub">Primavera</span>
+        <div class="credit">
+          <span>波提切利（1445-1510）</span>
+          <span>乌菲齐美术馆</span>
+        </div>
+        <span class="lic pending">权利待核验</span>
+      </article>
+      <article class="card">
+        <div class="thumb"><span class="ph">图像待接入<br>Mona Lisa</span></div>
+        <div class="meta"><span>盛期文艺复兴</span><span>西方</span></div>
+        <h3>蒙娜丽莎</h3>
+        <span class="sub">Mona Lisa</span>
+        <div class="credit">
+          <span>达·芬奇（1452-1519）</span>
+          <span>卢浮宫</span>
+        </div>
+        <span class="lic pending">权利待核验</span>
+      </article>
+      <article class="card">
+        <div class="thumb"><span class="ph">图像待接入<br>David</span></div>
+        <div class="meta"><span>盛期文艺复兴</span><span>西方</span></div>
+        <h3>大卫</h3>
+        <span class="sub">David</span>
+        <div class="credit">
+          <span>米开朗基罗（1475-1564）</span>
+          <span>佛罗伦萨学院美术馆</span>
+        </div>
+        <span class="lic pending">权利待核验</span>
+      </article>
+      <article class="card">
+        <div class="thumb"><span class="ph">图像待接入<br>The School of Athens</span></div>
+        <div class="meta"><span>盛期文艺复兴</span><span>西方</span></div>
+        <h3>雅典学院</h3>
+        <span class="sub">The School of Athens</span>
+        <div class="credit">
+          <span>拉斐尔（1483-1520）</span>
+          <span>梵蒂冈博物馆</span>
+        </div>
+        <span class="lic pending">权利待核验</span>
+      </article>
+      <article class="card">
+        <div class="thumb"><span class="ph">图像待接入<br>The Night Watch</span></div>
+        <div class="meta"><span>巴洛克</span><span>西方</span></div>
+        <h3>夜巡</h3>
+        <span class="sub">The Night Watch</span>
+        <div class="credit">
+          <span>伦勃朗（1606-1669）</span>
+          <span>荷兰国立博物馆</span>
+        </div>
+        <span class="lic pending">权利待核验</span>
+      </article>
+      <article class="card">
+        <div class="thumb"><span class="ph">图像待接入<br>The Milkmaid</span></div>
+        <div class="meta"><span>荷兰黄金时代</span><span>西方</span></div>
+        <h3>倒牛奶的女仆</h3>
+        <span class="sub">The Milkmaid</span>
+        <div class="credit">
+          <span>维米尔（1632-1675）</span>
+          <span>荷兰国立博物馆</span>
+        </div>
+        <span class="lic pending">权利待核验</span>
+      </article>
+      <article class="card">
+        <div class="thumb"><span class="ph">图像待接入<br>Girl with a Pearl Earring</span></div>
+        <div class="meta"><span>荷兰黄金时代</span><span>西方</span></div>
+        <h3>戴珍珠耳环的少女</h3>
+        <span class="sub">Girl with a Pearl Earring</span>
+        <div class="credit">
+          <span>维米尔（1632-1675）</span>
+          <span>莫瑞泰斯皇家美术馆</span>
+        </div>
+        <span class="lic pending">权利待核验</span>
+      </article>
+      <article class="card">
+        <div class="thumb"><span class="ph">图像待接入<br>The Three Graces</span></div>
+        <div class="meta"><span>巴洛克</span><span>西方</span></div>
+        <h3>美惠三女神</h3>
+        <span class="sub">The Three Graces</span>
+        <div class="credit">
+          <span>鲁本斯（1577-1640）</span>
+          <span>普拉多博物馆</span>
+        </div>
+        <span class="lic pending">权利待核验</span>
+      </article>
+      <article class="card">
+        <div class="thumb"><span class="ph">图像待接入<br>Las Meninas</span></div>
+        <div class="meta"><span>巴洛克</span><span>西方</span></div>
+        <h3>宫娥</h3>
+        <span class="sub">Las Meninas</span>
+        <div class="credit">
+          <span>委拉斯开兹（1599-1660）</span>
+          <span>普拉多博物馆</span>
+        </div>
+        <span class="lic pending">权利待核验</span>
+      </article>
+      <article class="card">
+        <div class="thumb"><span class="ph">图像待接入<br>Water Lilies</span></div>
+        <div class="meta"><span>印象派</span><span>西方</span></div>
+        <h3>睡莲</h3>
+        <span class="sub">Water Lilies</span>
+        <div class="credit">
+          <span>莫奈（1840-1926）</span>
+          <span>芝加哥艺术博物馆</span>
+        </div>
+        <span class="lic pending">权利待核验</span>
+      </article>
+      <article class="card">
+        <div class="thumb"><span class="ph">图像待接入<br>Stacks of Wheat</span></div>
+        <div class="meta"><span>印象派</span><span>西方</span></div>
+        <h3>干草堆</h3>
+        <span class="sub">Stacks of Wheat</span>
+        <div class="credit">
+          <span>莫奈（1840-1926）</span>
+          <span>芝加哥艺术博物馆</span>
+        </div>
+        <span class="lic pending">权利待核验</span>
+      </article>
+      <article class="card">
+        <div class="thumb"><span class="ph">图像待接入<br>The Bedroom</span></div>
+        <div class="meta"><span>后印象派</span><span>西方</span></div>
+        <h3>卧室</h3>
+        <span class="sub">The Bedroom</span>
+        <div class="credit">
+          <span>梵高（1853-1890）</span>
+          <span>芝加哥艺术博物馆</span>
+        </div>
+        <span class="lic pending">权利待核验</span>
+      </article>
+      <article class="card">
+        <div class="thumb"><span class="ph">图像待接入<br>Self-Portrait</span></div>
+        <div class="meta"><span>后印象派</span><span>西方</span></div>
+        <h3>自画像</h3>
+        <span class="sub">Self-Portrait</span>
+        <div class="credit">
+          <span>梵高（1853-1890）</span>
+          <span>芝加哥艺术博物馆</span>
+        </div>
+        <span class="lic pending">权利待核验</span>
+      </article></div>
+  </section>
+
+  <section class="section wrap" id="rights">
+    <div class="section-head"><div><span class="eyebrow">03 / Rights &amp; Provenance</span><h2 class="headline-lg">权利与来源</h2></div></div>
+    <p class="lead" style="max-width:60ch">开放不等于无主。每件作品页面均标注作者、现藏地、图像来源链接与许可协议；CC0 作品亦保留署名，以尊重著作人身权。任何未完成权利登记的作品不进入发布内容。</p>
+  </section>
+</main>
+
+<footer class="site-footer">
+  <div class="wrap">
+    <div class="footer-grid">
+      <div class="footer-col">
+        <span class="headline-sm" style="letter-spacing:.14em;text-transform:uppercase">Lumière Archive Foundation</span>
+        <p>以 IIIF 光栅流式传输与学术级考据，保存并开放世界文化遗产的影像与文献。所有入藏影像均逐件登记权利状态，署名与来源在前台完整可见。</p>
+      </div>
+      <div class="footer-col"><h4>学术标准</h4><ul>
+        <li>IIIF Presentation API 3.0</li><li>CIDOC CRM Ontologies</li>
+        <li>Getty AAT / ULAN Linked Data</li><li>Dublin Core Metadata Standard</li>
+      </ul></div>
+      <div class="footer-col"><h4>合作机构</h4><ul>
+        <li>The Metropolitan Museum of Art</li><li>Cleveland Museum of Art</li>
+        <li>Art Institute of Chicago</li><li>Rijksmuseum Amsterdam</li><li>国立故宫博物院</li>
+      </ul></div>
+    </div>
+    <div class="footer-base">
+      <span>© 2026 Lumière Archive · Open Access CC0 / PDM</span>
+      <span class="footer-links"><a href="#rights">权利与来源</a><a href="#catalogue">IIIF Manifest Registry</a></span>
+    </div>
+  </div>
+</footer>
+<div class="preview-flag">设计还原预览 · 无数据核验</div>
+</body>
+</html>

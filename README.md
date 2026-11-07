@@ -60,7 +60,7 @@ cd personal-album-platform
 python3 tools/check_rights.py
 ./gradlew :shared:allTests
 ./gradlew :composeApp:assembleDebug
-cd web && npm ci && npm run dev
+cd web && npm install && npm run dev
 ```
 
 ## 发布

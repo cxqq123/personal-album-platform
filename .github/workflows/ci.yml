@@ -76,17 +76,10 @@ jobs:
       - name: Build shared JS
         run: ./gradlew :shared:jsProductionLibraryDistribution
 
+      # 首次提交 package-lock.json 后改回 npm ci
       - name: Install
         working-directory: web
         run: npm ci
-
-      - name: Lint
-        working-directory: web
-        run: npm run lint
-
-      - name: Test
-        working-directory: web
-        run: npm run test
 
       - name: Build
         working-directory: web

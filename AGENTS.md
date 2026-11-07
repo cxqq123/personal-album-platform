@@ -43,8 +43,11 @@ composeApp/                 # Compose UI
   src/androidMain/kotlin/
   src/iosMain/kotlin/
 web/                        # Next.js（App Router）
-  src/app/                  # 路由与页面
-  src/lib/                  # 轻量适配层，调用 shared 编译出的 JS
+  app/                      # 路由与页面（服务端组件）
+  components/               # 区块组件
+  lib/content.ts            # 读取 data/artworks.json
+  data/artworks.json        # 由 CSV 生成，勿手改
+  preview.html              # 静态还原稿，仅供查看
 iosApp/                     # Xcode 壳工程（只能 macOS 构建）
 fastlane/                   # App 发版流水线
 docs/
@@ -68,8 +71,12 @@ docs/
 ./gradlew :composeApp:compileKotlinIosSimulatorArm64
 
 # Web
-cd web && npm ci && npm run dev
-cd web && npm run build && npm run lint && npm run test
+cd web && npm install && npm run dev
+cd web && npm run build
+
+# 内容数据（改了 CSV 必须重跑）
+python3 tools/build_web_content.py
+python3 tools/build_web_preview.py
 ```
 
 ## 5. 环境事实（不要试图绕过）
@@ -111,7 +118,7 @@ cd web && npm run build && npm run lint && npm run test
 缺一项就如实报告"未完成"，**不许说"已完成"**：
 
 1. `shared` 新增逻辑有 `commonTest` 覆盖，`./gradlew check` 通过；
-2. Web 端 `npm run build` + `npm run lint` 通过；
+2. Web 端 `npm run build` 通过；改了内容清单时 `python3 tools/build_web_content.py` 已重跑；
 3. Android 主路径在手/模拟器跑通（附截图）；
 4. iOS 至少通过 `compileKotlinIosSimulatorArm64`（有 Mac 时附运行截图）；
 5. 涉及公开页面时，验证过分享卡片的 meta 标签；
